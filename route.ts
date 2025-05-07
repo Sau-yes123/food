@@ -3,29 +3,30 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password } = body;
+    const { email, password, firstName, lastName } = body;
 
-    // In a real application, you would validate credentials against a database
-    // For now, we'll just check for a demo account
-    if (email === 'user@example.com' && password === 'password123') {
-      return NextResponse.json({
-        success: true,
-        user: {
-          id: '1',
-          name: 'Demo User',
-          email: 'user@example.com',
-        },
-        token: 'demo-token-12345',
-      });
+    // In a real application, you would save this data to a database
+    // For now, we'll just return a success response
+    
+    // Check if email is already taken (simulating a database check)
+    if (email === 'user@example.com') {
+      return NextResponse.json(
+        { success: false, message: 'Email is already registered' },
+        { status: 400 }
+      );
     }
 
-    // Return error for invalid credentials
-    return NextResponse.json(
-      { success: false, message: 'Invalid email or password' },
-      { status: 401 }
-    );
+    return NextResponse.json({
+      success: true,
+      message: 'Registration successful',
+      user: {
+        id: Math.random().toString(36).substring(2, 15),
+        name: `${firstName} ${lastName}`,
+        email,
+      },
+    });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Registration error:', error);
     return NextResponse.json(
       { success: false, message: 'Internal server error' },
       { status: 500 }
